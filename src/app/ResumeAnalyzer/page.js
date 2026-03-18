@@ -33,7 +33,7 @@ export default function ResumeAnalyzerUI() {
                 },
             })
                 .then(res => {
-                    console.log(res);
+                    console.log(res.data.text);
                 });
 
         } catch (error) {
@@ -92,7 +92,7 @@ export default function ResumeAnalyzerUI() {
                                         onChange={handleFileChange}
                                         ref={fileInputRef}
                                         type="file"
-                                        accept=".pdf"
+                                        accept=".pdf,application/pdf"
                                         className="hidden"
                                     />
 
