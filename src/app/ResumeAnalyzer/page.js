@@ -2,6 +2,8 @@
 "use client";
 import { useRef, useState } from "react";
 
+import axios from "axios";
+
 export default function ResumeAnalyzerUI() {
 
     const [jobDesc, setJobDesc] = useState("");
@@ -12,15 +14,31 @@ export default function ResumeAnalyzerUI() {
     const handleFileChange = (e) => {
         const selectedFile = e.target.files[0];
         setFile(selectedFile);
-        console.log("Selected file:", selectedFile);
+        //console.log("Selected file:", selectedFile);
     };
 
 
     const analyze = (e) => {
         e.preventDefault();
 
-        console.log(jobDesc);
-        console.log(file);
+        const formData = new FormData();
+        formData.append("jobDesc", jobDesc);
+        formData.append("file", file);
+
+        try {
+
+            axios.post("/api/resume-analyze", formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            })
+                .then(res => {
+                    console.log(res);
+                });
+
+        } catch (error) {
+            console.log(error);
+        }
 
         setJobDesc("");
         setFile(null);
@@ -83,7 +101,7 @@ export default function ResumeAnalyzerUI() {
                                     </div>
 
                                     <p className="text-sm font-medium mb-1">
-                                        Drag & drop or click to browse
+                                        {file ? file.name : "Click or drag to upload"}
                                     </p>
                                     <p className="text-xs text-gray-400">
                                         Supports PDF format, up to 5MB
