@@ -1,4 +1,3 @@
-import OpenAI from "openai";
 export const runtime = "nodejs";
 
 export async function extractText(file) {

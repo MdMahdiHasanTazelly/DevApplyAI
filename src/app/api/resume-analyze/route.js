@@ -22,7 +22,7 @@ export async function POST(request) {
 
         const text = await extractText(file); //resume text extraction in helper.js
 
-        const response = await axios.post("http://localhost:8000/analyze", { resume: text, jobDesc }, {
+        const response = await axios.post(`${process.env.AI_BACKEND_URL}/analyze`, { resume: text, jobDesc }, {
             headers: {
                 "Content-Type": "application/json",
             }
