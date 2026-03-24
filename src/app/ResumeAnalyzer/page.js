@@ -6,6 +6,8 @@ import axios from "axios";
 
 export default function ResumeAnalyzerUI() {
 
+    const [analysisResult, setAnalysisResult] = useState(null);
+
     const [jobDesc, setJobDesc] = useState("");
     const [file, setFile] = useState(null);
 
@@ -33,7 +35,8 @@ export default function ResumeAnalyzerUI() {
                 },
             })
                 .then(res => {
-                    console.log(res.data.text);
+                    // console.log(res.data);
+                    setAnalysisResult(res.data); // Save response in state
                 });
 
         } catch (error) {
@@ -58,12 +61,15 @@ export default function ResumeAnalyzerUI() {
                         <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-400 flex items-center justify-center shadow-lg">
                             ✨
                         </div>
+
+
+
                         <h1 className="text-2xl font-bold tracking-tight">
                             AI Resume Analyzer
                         </h1>
                     </div>
                     <p className="text-gray-500 text-lg max-w-2xl">
-                        Optimize your resume for any role. Upload your CV and paste the job
+                        Optimize your resume for TECH role. Upload your CV and paste the job
                         description to get instant, actionable feedback.
                     </p>
                 </header>
@@ -147,15 +153,53 @@ export default function ResumeAnalyzerUI() {
                                     ✨
                                 </div>
 
-                                <h3 className="text-xl font-semibold mb-2">
-                                    Ready for Analysis
-                                </h3>
 
-                                <p className="text-gray-500 max-w-md">
-                                    Provide your resume and a job description on the left. Our AI
-                                    will evaluate your match, highlight missing keywords, and suggest
-                                    improvements.
-                                </p>
+                                {analysisResult ? (
+                                    <div className="text-left w-full max-w-lg">
+                                        <h3 className="text-xl font-semibold mb-2">Analysis Result</h3>
+
+                                        <p className="mb-2">
+                                            <strong>Score:</strong> {analysisResult.score}%
+                                        </p>
+
+                                        <div className="mb-2">
+                                            <strong>Matched Skills:</strong>
+                                            <ul className="list-disc list-inside">
+                                                {analysisResult.matchedSkills.map(skill => (
+                                                    <li key={skill}>{skill}</li>
+                                                ))}
+                                            </ul>
+                                        </div>
+
+                                        <div className="mb-2">
+                                            <strong>Missing Skills:</strong>
+                                            <ul className="list-disc list-inside">
+                                                {analysisResult.missingSkills.map(skill => (
+                                                    <li key={skill}>{skill}</li>
+                                                ))}
+                                            </ul>
+                                        </div>
+
+                                        <div className="mb-2">
+                                            <strong>Suggestions:</strong>
+                                            <ul className="list-disc list-inside">
+                                                {analysisResult.suggestions.map(suggestion => (
+                                                    <li key={suggestion}>{suggestion}</li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <>
+                                        <h3 className="text-xl font-semibold mb-2">Ready for Analysis</h3>
+                                        <p className="text-gray-500 max-w-md">
+                                            Provide your resume and a job description on the left. Our AI
+                                            will evaluate your match, highlight missing keywords, and suggest
+                                            improvements.
+                                        </p>
+                                    </>
+                                )}
+
                             </div>
                         </div>
 
