@@ -1,6 +1,7 @@
-// components/ResumeAnalyzerUI.js
 "use client";
 import { useRef, useState } from "react";
+
+import Loader from "../Loader/page.js";
 
 import axios from "axios";
 
@@ -10,6 +11,8 @@ export default function ResumeAnalyzerUI() {
 
     const [jobDesc, setJobDesc] = useState("");
     const [file, setFile] = useState(null);
+
+    const [clickAnalyzed, setClickAnalyzed] = useState(false);
 
     const fileInputRef = useRef(null);
 
@@ -22,6 +25,10 @@ export default function ResumeAnalyzerUI() {
 
     const analyze = (e) => {
         e.preventDefault();
+
+        if (!file || !jobDesc) return; // safety check
+
+        setClickAnalyzed(true);
 
         const formData = new FormData();
         formData.append("jobDesc", jobDesc);
@@ -37,6 +44,8 @@ export default function ResumeAnalyzerUI() {
                 .then(res => {
                     // console.log(res.data);
                     setAnalysisResult(res.data); // Save response in state
+
+                    setClickAnalyzed(false);
                 });
 
         } catch (error) {
@@ -132,13 +141,15 @@ export default function ResumeAnalyzerUI() {
                                 />
                             </div>
 
-                            {/* Button */}
+
                             <button className="w-full relative group overflow-hidden rounded-2xl p-[1px] hover:-translate-y-1 transition"
-                            // onClick={() => analyze()}
+
                             >
                                 <span className="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500 opacity-70 group-hover:opacity-100"></span>
 
-                                <div className="relative bg-white px-8 py-4 rounded-[15px] flex items-center justify-center gap-2">
+                                <div className="relative bg-white px-8 py-4 rounded-[15px] flex items-center justify-center gap-2"
+
+                                >
                                     <span className="font-semibold">Analyze Resume</span>
                                     ➡️
                                 </div>
@@ -149,12 +160,11 @@ export default function ResumeAnalyzerUI() {
                         <div className="lg:col-span-7 h-full">
                             <div className="h-full min-h-[500px] flex flex-col items-center justify-center p-8 border-2 border-dashed rounded-3xl bg-white/50 text-center">
 
-                                <div className="w-20 h-20 bg-indigo-50 rounded-3xl flex items-center justify-center mb-6 rotate-3">
-                                    ✨
-                                </div>
+
 
 
                                 {analysisResult ? (
+
                                     <div className="text-left w-full max-w-lg">
                                         <h3 className="text-xl font-semibold mb-2">Analysis Result</h3>
 
@@ -189,15 +199,27 @@ export default function ResumeAnalyzerUI() {
                                             </ul>
                                         </div>
                                     </div>
+
                                 ) : (
-                                    <>
-                                        <h3 className="text-xl font-semibold mb-2">Ready for Analysis</h3>
-                                        <p className="text-gray-500 max-w-md">
-                                            Provide your resume and a job description on the left. Our AI
-                                            will evaluate your match, highlight missing keywords, and suggest
-                                            improvements.
-                                        </p>
-                                    </>
+                                    (
+                                        !clickAnalyzed ? (
+                                            <>
+                                                <div className="w-20 h-20 bg-indigo-50 rounded-3xl flex items-center justify-center mb-6 rotate-3">
+                                                    ✨
+                                                </div>
+                                                <h3 className="text-xl font-semibold mb-2">Ready for Analysis</h3>
+                                                <p className="text-gray-500 max-w-md">
+                                                    Provide your resume and a job description on the left. Our AI
+                                                    will evaluate your match, highlight missing keywords, and suggest
+                                                    improvements.
+                                                </p>
+                                            </>
+                                        ) : (
+                                            <div className="spinner-border" style={{ width: "3rem", height: "3rem" }} role="status">
+                                                <span className="visually-hidden">Loading...</span>
+                                            </div>
+                                        )
+                                    )
                                 )}
 
                             </div>
