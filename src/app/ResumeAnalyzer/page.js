@@ -1,18 +1,19 @@
 "use client";
 import { useRef, useState } from "react";
-
-import Loader from "../Loader/page.js";
+import CoverLetterCard from "../CoverLetterCard/page.js";
 
 import axios from "axios";
+import Loader from "../Loader/page.js";
 
 export default function ResumeAnalyzerUI() {
 
     const [analysisResult, setAnalysisResult] = useState(null);
-
     const [jobDesc, setJobDesc] = useState("");
     const [file, setFile] = useState(null);
-
+    const [resumeText, setResumeText] = useState("");
     const [clickAnalyzed, setClickAnalyzed] = useState(false);
+
+    const [showCV, setShowCV] = useState(false);
 
     const fileInputRef = useRef(null);
 
@@ -43,8 +44,8 @@ export default function ResumeAnalyzerUI() {
             })
                 .then(res => {
                     // console.log(res.data);
-                    setAnalysisResult(res.data); // Save response in state
-
+                    setAnalysisResult(res.data.analysis); // Save response in state
+                    setResumeText(res.data.resumeText);
                     setClickAnalyzed(false);
                 });
 
@@ -96,7 +97,8 @@ export default function ResumeAnalyzerUI() {
                                 <div className="absolute top-0 inset-x-0 h-1 "></div>
 
                                 <h2 className="text-lg font-semibold flex items-center gap-2 mb-4">
-                                    📄 1. Upload Resume
+                                    <i className="bi bi-file-earmark-text-fill text-secondary"></i>
+                                    1. Upload Resume
                                 </h2>
 
                                 <div
@@ -129,7 +131,8 @@ export default function ResumeAnalyzerUI() {
                                 <div className="absolute top-0 inset-x-0 h-1 "></div>
 
                                 <h2 className="text-lg font-semibold flex items-center gap-2 mb-4">
-                                    💼 2. Job Description
+                                    <i className="bi bi-briefcase-fill text-secondary"></i>
+                                    2. Job Description
                                 </h2>
 
                                 <textarea
@@ -142,18 +145,12 @@ export default function ResumeAnalyzerUI() {
                             </div>
 
 
-                            <button className="w-full relative group overflow-hidden rounded-2xl p-[1px] hover:-translate-y-1 transition"
+                            <button type="submit" className="btn btn-primary btn-lg btn-block mt-5">
+                                Analyze Resume &nbsp; &nbsp;
 
-                            >
-                                <span className="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500 opacity-70 group-hover:opacity-100"></span>
-
-                                <div className="relative bg-white px-8 py-4 rounded-[15px] flex items-center justify-center gap-2"
-
-                                >
-                                    <span className="font-semibold">Analyze Resume</span>
-                                    ➡️
-                                </div>
+                                <i className="bi bi-arrow-right-circle-fill"></i>
                             </button>
+
                         </div>
 
                         {/* RIGHT SIDE */}
@@ -165,40 +162,52 @@ export default function ResumeAnalyzerUI() {
 
                                 {analysisResult ? (
 
-                                    <div className="text-left w-full max-w-lg">
-                                        <h3 className="text-xl font-semibold mb-2">Analysis Result</h3>
+                                    <>
 
-                                        <p className="mb-2">
-                                            <strong>Score:</strong> {analysisResult.score}%
-                                        </p>
 
-                                        <div className="mb-2">
-                                            <strong>Matched Skills:</strong>
-                                            <ul className="list-disc list-inside">
-                                                {analysisResult.matchedSkills.map(skill => (
-                                                    <li key={skill}>{skill}</li>
-                                                ))}
-                                            </ul>
+                                        <div className="text-left w-full max-w-lg">
+                                            <h3 className="text-xl font-semibold mb-2">Analysis Result</h3>
+
+                                            <p className="mb-2">
+                                                <strong>Score:</strong> {analysisResult.score}%
+                                            </p>
+
+                                            <div className="mb-2">
+                                                <strong>Matched Skills:</strong>
+                                                <ul className="list-disc list-inside">
+                                                    {analysisResult.matchedSkills.map(skill => (
+                                                        <li key={skill}>{skill}</li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+
+                                            <div className="mb-2">
+                                                <strong>Missing Skills:</strong>
+                                                <ul className="list-disc list-inside">
+                                                    {analysisResult.missingSkills.map(skill => (
+                                                        <li key={skill}>{skill}</li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+
+                                            <div className="mb-2">
+                                                <strong>Suggestions:</strong>
+                                                <ul className="list-disc list-inside">
+                                                    {analysisResult.suggestions.map(suggestion => (
+                                                        <li key={suggestion}>{suggestion}</li>
+                                                    ))}
+                                                </ul>
+                                            </div>
                                         </div>
 
-                                        <div className="mb-2">
-                                            <strong>Missing Skills:</strong>
-                                            <ul className="list-disc list-inside">
-                                                {analysisResult.missingSkills.map(skill => (
-                                                    <li key={skill}>{skill}</li>
-                                                ))}
-                                            </ul>
-                                        </div>
+                                        <button type="button" className="btn btn-primary btn-lg btn-block mt-5"
+                                            onClick={() => setShowCV(true)}
+                                        >
+                                            Generate Cover Letter &nbsp;
+                                            <i className="bi bi-pencil-square text-white"></i>
+                                        </button>
 
-                                        <div className="mb-2">
-                                            <strong>Suggestions:</strong>
-                                            <ul className="list-disc list-inside">
-                                                {analysisResult.suggestions.map(suggestion => (
-                                                    <li key={suggestion}>{suggestion}</li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    </div>
+                                    </>
 
                                 ) : (
                                     (
@@ -215,9 +224,10 @@ export default function ResumeAnalyzerUI() {
                                                 </p>
                                             </>
                                         ) : (
-                                            <div className="spinner-border" style={{ width: "3rem", height: "3rem" }} role="status">
-                                                <span className="visually-hidden">Loading...</span>
-                                            </div>
+                                            <Loader />
+                                            // <div className="spinner-border" style={{ width: "3rem", height: "3rem" }} role="status">
+                                            //     <span className="visually-hidden">Loading...</span>
+                                            // </div>
                                         )
                                     )
                                 )}
@@ -229,6 +239,15 @@ export default function ResumeAnalyzerUI() {
                 </main>
 
             </form>
+
+
+            {showCV && (
+                <CoverLetterCard
+                    resumeText={resumeText}
+                    jobDesc={jobDesc}
+                    onClose={() => setShowCV(false)}
+                />
+            )}
         </div>
     );
 }

@@ -28,7 +28,7 @@ export async function POST(request) {
             }
         });
 
-        return Response.json(response.data);
+        return Response.json({ analysis: response.data, resumeText: text });
 
     } catch (err) {
         console.error(err);
