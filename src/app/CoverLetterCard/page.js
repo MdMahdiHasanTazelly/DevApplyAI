@@ -7,30 +7,33 @@ export default function CoverLetterCard({ resumeText, jobDesc, onClose }) {
 
     const [coverLetter, setCoverLetter] = useState("");
     const [loading, setLoading] = useState(true);
+    const [isEditing, setIsEditing] = useState(false);
 
     useEffect(() => {
         generateCoverLetter();
     }, []);
 
+    // working on generate-cv endpoint
     const generateCoverLetter = async () => {
         try {
-            // next backend neeeds to be connected
-            const res = await axios.post(`${process.env.AI_BACKEND_URL}/generate-cv`, {
-                resumeText, jobDesc
-            }, {
-                headers: {
-                    "Content-Type": "application/json",
-                }
-            }
+            const res = await axios.post(`/api/generate-cv`,
+                { resumeText, jobDesc },
+                { headers: { "Content-Type": "application/json" } }
             );
+            //setCoverLetter(res.data.coverLetter);
 
-            setCoverLetter(res.data.coverLetter);
+
         } catch (err) {
             console.log(err);
         }
 
         setLoading(false);
     };
+
+
+    const handleEditToggle = () => {
+        setIsEditing(!isEditing);
+    }
 
     return (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
@@ -48,7 +51,8 @@ export default function CoverLetterCard({ resumeText, jobDesc, onClose }) {
 
                 </button>
 
-                <h2 className="text-xl font-semibold mb-4">
+                <h2 className="text-xl font-semibold mb-4"
+                    onClick={generateCoverLetter}>
                     Generated Cover Letter
                 </h2>
 
@@ -56,20 +60,46 @@ export default function CoverLetterCard({ resumeText, jobDesc, onClose }) {
                     <Loader />
 
                 ) : (
-                    <div className="whitespace-pre-line text-sm text-gray-700 max-h-[400px] overflow-y-auto">
+                    <div className="whitespace-pre-line text-sm text-gray-700 max-h-[500px] overflow-y-auto">
+
+                        {/* <textarea/> */}
+                        <textarea
+                            className={`form-control w-100 ${isEditing ? "border-primary border-2 shadow-lg" : ""}`}
+                            rows="20"
+                            value={coverLetter}
+                            readOnly={!isEditing}
+                            onChange={(e) => setCoverLetter(e.target.value)}
+                        ></textarea>
                         {coverLetter}
                     </div>
                 )}
 
                 {/* Copy Button */}
                 {!loading && (
-                    <button
-                        className="btn btn-primary mt-4"
-                        onClick={() => navigator.clipboard.writeText(coverLetter)}
-                    >
-                        <b>Copy to Clipboard</b>
-                    </button>
+                    <>
+
+                        <button
+                            className="btn btn-primary mt-4"
+                            onClick={() => navigator.clipboard.writeText(coverLetter)}
+                        >
+                            <b>Copy to Clipboard</b>
+                        </button>
+
+                        <button className="btn btn-primary mt-4 ms-4"
+                            onClick={handleEditToggle}
+                            style={{ width: "6rem" }}
+                        >
+                            <b>{isEditing ? "Save" : "Edit"}</b>
+                        </button>
+                    </>
+
+
+
                 )}
+
+
+
+
             </div>
         </div>
     );

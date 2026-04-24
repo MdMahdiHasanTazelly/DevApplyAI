@@ -37,11 +37,9 @@ export default function ResumeAnalyzerUI() {
 
         try {
 
-            axios.post("/api/resume-analyze", formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
-            })
+            axios.post("/api/resume-analyze", formData,
+                { headers: { "Content-Type": "multipart/form-data" } }
+            )
                 .then(res => {
                     // console.log(res.data);
                     setAnalysisResult(res.data.analysis); // Save response in state
@@ -53,7 +51,7 @@ export default function ResumeAnalyzerUI() {
             console.log(error);
         }
 
-        setJobDesc("");
+        //setJobDesc("");
         setFile(null);
     }
 
