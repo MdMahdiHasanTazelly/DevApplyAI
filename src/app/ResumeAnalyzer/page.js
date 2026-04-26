@@ -1,7 +1,6 @@
 "use client";
 import { useRef, useState } from "react";
 import CoverLetterCard from "../CoverLetterCard/page.js";
-
 import axios from "axios";
 import Loader from "../Loader/page.js";
 
@@ -13,6 +12,7 @@ export default function ResumeAnalyzerUI() {
     const [resumeText, setResumeText] = useState("");
     const [clickAnalyzed, setClickAnalyzed] = useState(false);
 
+
     const [showCV, setShowCV] = useState(false);
 
     const fileInputRef = useRef(null);
@@ -22,6 +22,8 @@ export default function ResumeAnalyzerUI() {
         setFile(selectedFile);
         //console.log("Selected file:", selectedFile);
     };
+
+
 
 
     const analyze = (e) => {
@@ -223,9 +225,7 @@ export default function ResumeAnalyzerUI() {
                                             </>
                                         ) : (
                                             <Loader />
-                                            // <div className="spinner-border" style={{ width: "3rem", height: "3rem" }} role="status">
-                                            //     <span className="visually-hidden">Loading...</span>
-                                            // </div>
+
                                         )
                                     )
                                 )}

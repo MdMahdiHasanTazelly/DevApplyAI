@@ -1,17 +1,13 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import axios from "axios";
 import Loader from "../Loader/page.js";
 
 export default function CoverLetterCard({ resumeText, jobDesc, onClose }) {
 
-    const [coverLetter, setCoverLetter] = useState("");
     const [loading, setLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
-
-    useEffect(() => {
-        generateCoverLetter();
-    }, []);
+    const [coverLetter, setCoverLetter] = useState("");
 
     // working on generate-cv endpoint
     const generateCoverLetter = async () => {
@@ -20,15 +16,25 @@ export default function CoverLetterCard({ resumeText, jobDesc, onClose }) {
                 { resumeText, jobDesc },
                 { headers: { "Content-Type": "application/json" } }
             );
-            //setCoverLetter(res.data.coverLetter);
 
-
+            //console.log(res.data.cv);
+            setCoverLetter(res.data.cv);
         } catch (err) {
             console.log(err);
         }
 
         setLoading(false);
     };
+
+    //to avoid useEffect(in next) double firing in dev
+    const hasFetched = useRef(false);
+
+    useEffect(() => {
+        if (hasFetched.current) return;
+
+        hasFetched.current = true;
+        generateCoverLetter();
+    }, []);
 
 
     const handleEditToggle = () => {
@@ -46,23 +52,27 @@ export default function CoverLetterCard({ resumeText, jobDesc, onClose }) {
                     onClick={onClose}
                     className="absolute top-3 right-3 text-gray-500 hover:text-black text-xl"
                 >
-
                     <i className="bi bi-x-circle fs-2 fw-bold"></i>
 
                 </button>
 
-                <h2 className="text-xl font-semibold mb-4"
-                    onClick={generateCoverLetter}>
-                    Generated Cover Letter
+                <h2 className="text-xl font-semibold mb-4">
+                    Cover Letter Suggestions
                 </h2>
 
                 {loading ? (
-                    <Loader />
+
+                    <div
+                        className="form-control w-100 d-flex justify-content-center align-items-center"
+                        style={{ height: "480px" }}
+                    >
+                        <Loader />
+                    </div>
+
 
                 ) : (
                     <div className="whitespace-pre-line text-sm text-gray-700 max-h-[500px] overflow-y-auto">
 
-                        {/* <textarea/> */}
                         <textarea
                             className={`form-control w-100 ${isEditing ? "border-primary border-2 shadow-lg" : ""}`}
                             rows="20"
@@ -70,11 +80,11 @@ export default function CoverLetterCard({ resumeText, jobDesc, onClose }) {
                             readOnly={!isEditing}
                             onChange={(e) => setCoverLetter(e.target.value)}
                         ></textarea>
-                        {coverLetter}
+
                     </div>
                 )}
 
-                {/* Copy Button */}
+
                 {!loading && (
                     <>
 
@@ -93,12 +103,7 @@ export default function CoverLetterCard({ resumeText, jobDesc, onClose }) {
                         </button>
                     </>
 
-
-
                 )}
-
-
-
 
             </div>
         </div>

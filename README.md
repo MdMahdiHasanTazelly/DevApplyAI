@@ -1,4 +1,4 @@
-# AI Apply
+# Dev Apply AI 
 
 
 
@@ -11,3 +11,13 @@
  2. Projects virtual environment was not working.  
  **Cause:** Changing the project's folder name. Because in the env configuration file, the directory had remained as the old peoject name. So, global python was running instead of the projects env.  
  **Soln :** Recreated the virtual environment.
+
+ 3. Cover Letter card was fetching cover-letter text.  
+ **Cause:** In Next.js development mode, useEffect is triggered twice.  
+ **Soln :** Guard the useEffect for the second API call.  
+    ```const hasFetched = useRef(false);  
+    useEffect(() => {  
+        if (hasFetched.current) return;  
+        hasFetched.current = true;  
+        generateCoverLetter();  
+    }, []);```

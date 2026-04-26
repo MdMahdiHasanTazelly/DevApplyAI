@@ -9,20 +9,20 @@ export async function POST(request) {
         const jobDesc = body.jobDesc;
 
         if (!resumeText || !jobDesc) {
-            return Response.json({ error: "Resume & Job Description are requires." }, { status: 400 });
+            return Response.json({ error: "Resume & Job Description are required." }, { status: 400 });
         }
 
         const response = await axios.post(`${process.env.AI_BACKEND_URL}/generate-cv`,
             { resumeText, jobDesc },
             {
                 headers: { "Content-Type": "application/json" }
-        });
+            });
 
 
-       // console.log(response);
+        //console.log(response.data.cover_letter);
 
 
-        return Response.json({ message: "Dummy." });
+        return Response.json({ cv: response.data.cover_letter });
 
     } catch (error) {
         console.error(error);
