@@ -203,7 +203,7 @@ export default function ResumeAnalyzerUI() {
                                         <button type="button" className="btn btn-primary btn-lg btn-block mt-5"
                                             onClick={() => setShowCV(true)}
                                         >
-                                            Generate Cover Letter &nbsp;
+                                            Get Cover Letter Suggestions&nbsp;
                                             <i className="bi bi-pencil-square text-white"></i>
                                         </button>
 

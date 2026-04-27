@@ -3,6 +3,8 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import axios from "axios";
 import Loader from "../Loader/page.js";
 
+import { toast } from "react-toastify";
+
 export default function CoverLetterCard({ resumeText, jobDesc, onClose }) {
 
     const [loading, setLoading] = useState(true);
@@ -90,7 +92,14 @@ export default function CoverLetterCard({ resumeText, jobDesc, onClose }) {
 
                         <button
                             className="btn btn-primary mt-4"
-                            onClick={() => navigator.clipboard.writeText(coverLetter)}
+                            onClick={async () => {
+                                try {
+                                    await navigator.clipboard.writeText(coverLetter);
+                                    toast.success("Copied to clipboard!");
+                                } catch (err) {
+                                    toast.error("Failed to copy!");
+                                }
+                            }}
                         >
                             <b>Copy to Clipboard</b>
                         </button>

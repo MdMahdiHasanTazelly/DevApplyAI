@@ -5,6 +5,9 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import "./globals.css";
 
 
+import ToastProvider from "./ToastProvider/page.js";
+
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -28,6 +31,7 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
+        <ToastProvider/>
       </body>
     </html>
   );
