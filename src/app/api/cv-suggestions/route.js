@@ -12,7 +12,7 @@ export async function POST(request) {
             return Response.json({ error: "Resume & Job Description are required." }, { status: 400 });
         }
 
-        const response = await axios.post(`${process.env.AI_BACKEND_URL}/generate-cv`,
+        const response = await axios.post(`${process.env.AI_BACKEND_URL}/cv-suggestions`,
             { resumeText, jobDesc },
             {
                 headers: { "Content-Type": "application/json" }

@@ -190,14 +190,14 @@ export default function ResumeAnalyzerUI() {
                                                 </ul>
                                             </div>
 
-                                            <div className="mb-2">
+                                            {/* <div className="mb-2">
                                                 <strong>Suggestions:</strong>
                                                 <ul className="list-disc list-inside">
                                                     {analysisResult.suggestions.map(suggestion => (
                                                         <li key={suggestion}>{suggestion}</li>
                                                     ))}
                                                 </ul>
-                                            </div>
+                                            </div> */}
                                         </div>
 
                                         <button type="button" className="btn btn-primary btn-lg btn-block mt-5"

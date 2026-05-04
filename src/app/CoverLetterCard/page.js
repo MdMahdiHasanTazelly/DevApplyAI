@@ -9,18 +9,18 @@ export default function CoverLetterCard({ resumeText, jobDesc, onClose }) {
 
     const [loading, setLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
-    const [coverLetter, setCoverLetter] = useState("");
+    const [cvSuggestions, setCVSuggestions] = useState("");
 
     // working on generate-cv endpoint
-    const generateCoverLetter = async () => {
+    const generateCVSuggestions = async () => {
         try {
-            const res = await axios.post(`/api/generate-cv`,
+            const res = await axios.post(`/api/cv-suggestions`,
                 { resumeText, jobDesc },
                 { headers: { "Content-Type": "application/json" } }
             );
 
-            //console.log(res.data.cv);
-            setCoverLetter(res.data.cv);
+            // console.log(res.data.cv);
+            setCVSuggestions(res.data.cv);
         } catch (err) {
             console.log(err);
         }
@@ -28,15 +28,16 @@ export default function CoverLetterCard({ resumeText, jobDesc, onClose }) {
         setLoading(false);
     };
 
-    //to avoid useEffect(in next) double firing in dev
+    // to avoid useEffect(in next) double firing in dev
     const hasFetched = useRef(false);
 
     useEffect(() => {
         if (hasFetched.current) return;
 
         hasFetched.current = true;
-        generateCoverLetter();
+        generateCVSuggestions();
     }, []);
+
 
 
     const handleEditToggle = () => {
@@ -78,9 +79,9 @@ export default function CoverLetterCard({ resumeText, jobDesc, onClose }) {
                         <textarea
                             className={`form-control w-100 ${isEditing ? "border-primary border-2 shadow-lg" : ""}`}
                             rows="20"
-                            value={coverLetter}
+                            value={cvSuggestions}
                             readOnly={!isEditing}
-                            onChange={(e) => setCoverLetter(e.target.value)}
+                            onChange={(e) => setCVSuggestions(e.target.value)}
                         ></textarea>
 
                     </div>
@@ -94,9 +95,10 @@ export default function CoverLetterCard({ resumeText, jobDesc, onClose }) {
                             className="btn btn-primary mt-4"
                             onClick={async () => {
                                 try {
-                                    await navigator.clipboard.writeText(coverLetter);
+                                    await navigator.clipboard.writeText(cvSuggestions);
                                     toast.success("Copied to clipboard!");
                                 } catch (err) {
+                                    console.log(err);
                                     toast.error("Failed to copy!");
                                 }
                             }}
